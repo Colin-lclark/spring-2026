@@ -12,7 +12,7 @@ following 13 problems:
 * All the problems (6) in the
   [List-2 section](https://codingbat.com/python/List-2)
 * The *first* problem in the
-  [Logic-2 section](https://codingbat.com/prob/p118406) (i.e, the `make_brick`
+  [Logic-2 section](https://codingbat.com/prob/p118406) (i.e., the `make_brick`
   problem)
 
 ## Hints
