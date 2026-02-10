@@ -1,7 +1,12 @@
 from PIL import Image
 
+kernal_edge = [
+    [-1,-1,-1],
+    [-1, 8,-1],
+    [-1,-1,-1]
+]
 if __name__ == '__defineEdge__':
-    defineEdge(Image, list[list(int)])
+    defineEdge('llama.jpg', kernal_edge)
 
 def defineEdge(imgname, kernal):
     img = Image.open(imgname)
