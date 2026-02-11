@@ -1,5 +1,4 @@
 from PIL import Image
-import math
 
 kernal_edge = [
     [-1,-1,-1],
@@ -34,10 +33,10 @@ def getCoords(x, y):
 def setPixel(img, pixel_coords, new_img, kernal):
     pixels = getPixels(img, pixel_coords)
     new_p = pixels[1][1] * kernal[1][1]
-    for x in range(-3, 0):
-        for y in range(-3, 0):
+    for x in range(3):
+        for y in range(3):
             if x != 1 and y != 1:
-                new_p += pixels[x+3][y+3] * kernal[math.abs(x)][math.abs(y)]
+                new_p += pixels[x][y] * kernal[-x][-y]
     new_img.putpixel((pixel_coords[1][1][0], pixel_coords[1][1][1]), new_p)
 
 
