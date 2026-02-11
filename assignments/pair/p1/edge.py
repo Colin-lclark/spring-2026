@@ -6,9 +6,6 @@ kernal_edge = [
     [-1,-1,-1]
 ]
 
-if __name__ == '__defineEdge__':
-    defineEdge('llama.jpg', kernal_edge)
-
 def defineEdge(imgname, kernal):
     img = Image.open(imgname)
     new_img = img.copy()
@@ -47,3 +44,6 @@ def getPixels(img, pixel_coords):
         for y in range(3):
             pixels[x].append(img.getpixel(pixel_coords[x][y])[0])
     return pixels 
+
+if __name__ == '__defineEdge__':
+    defineEdge()
