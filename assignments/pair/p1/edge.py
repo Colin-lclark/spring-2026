@@ -45,5 +45,4 @@ def getPixels(img, pixel_coords):
             pixels[x].append(img.getpixel(pixel_coords[x][y])[0])
     return pixels 
 
-if __name__ == '__defineEdge__':
-    defineEdge()
+defineEdge('llama.jpg', kernal_edge)
