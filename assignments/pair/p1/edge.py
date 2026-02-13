@@ -5,9 +5,10 @@ kernal_edge = [[-1,-1,-1],[-1, 8,-1],[-1,-1,-1]]
 def defineEdge(imgname):
     img = Image.open(imgname)
     new_img = img.copy()
-    x, y = 0, 0
+    x = 1
     (width, height) = img.size
     while x < width:
+        y = 1
         while y < height:
             pixel_coords = getCoords(x,y)
             setPixel(img, pixel_coords, new_img, kernal_edge)
@@ -17,10 +18,12 @@ def defineEdge(imgname):
 
 def getCoords(x, y):
     coords = []
-    while x < x + 3:
+    for x1 in range(3):
         coords.append([])
-        while y < y + 3:
-            coords[x].append([x,y])
+        x1 += 1
+        for y1 in range(3):
+            coords[x1-1].append([x+x1-1,y+y1-1])
+            y1 += 1
     return coords
 
 def setPixel(img, pixel_coords, new_img, kernal):
@@ -42,4 +45,4 @@ def getPixels(img, pixel_coords):
     return pixels 
 
 if __name__ == '__main__':
-    defineEdge(r'rose.jpg')
+    defineEdge(r'C:\Users\Colin\OneDrive\Documents\GitHub\ComputerScienceII\spring-2026\assignments\pair\p1\llama.jpg')
