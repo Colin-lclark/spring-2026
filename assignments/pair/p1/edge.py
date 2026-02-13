@@ -1,29 +1,25 @@
 from PIL import Image
 
-kernal_edge = [
-    [-1,-1,-1],
-    [-1, 8,-1],
-    [-1,-1,-1]
-]
+kernal_edge = [[-1,-1,-1],[-1, 8,-1],[-1,-1,-1]]
 
-def defineEdge(imgname, kernal):
+def defineEdge(imgname):
     img = Image.open(imgname)
     new_img = img.copy()
     x, y = 0, 0
-    (width, height) = img.size()
+    (width, height) = img.size
     while x < width:
         while y < height:
             pixel_coords = getCoords(x,y)
-            setPixel(img, pixel_coords, new_img, kernal)
+            setPixel(img, pixel_coords, new_img, kernal_edge)
             y += 1
         x += 1
     new_img.show()
 
 def getCoords(x, y):
     coords = []
-    for x in range(3):
+    while x < x + 3:
         coords.append([])
-        for y in range(3):
+        while y < y + 3:
             coords[x].append([x,y])
     return coords
 
@@ -45,4 +41,5 @@ def getPixels(img, pixel_coords):
             pixels[x].append(img.getpixel(pixel_coords[x][y])[0])
     return pixels 
 
-defineEdge('llama.jpg', kernal_edge)
+if __name__ == '__main__':
+    defineEdge(r'rose.jpg')
