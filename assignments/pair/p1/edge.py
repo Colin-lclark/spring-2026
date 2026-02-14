@@ -1,3 +1,5 @@
+'''Authors: Colin Sheehan, Lazar Lukac''' 
+
 from PIL import Image
 
 kernal_edge = [[-1,-1,-1],[-1, 8,-1],[-1,-1,-1]]
@@ -43,4 +45,4 @@ def getPixelList(img, pixel_coords):
     return pixels 
 
 if __name__ == '__main__':
-    defineEdge(r'C:\Users\Colin\OneDrive\Documents\GitHub\ComputerScienceII\spring-2026\assignments\pair\p1\rose.jpg', kernal_edge)
+    defineEdge(r'rose.jpg', kernal_edge)
