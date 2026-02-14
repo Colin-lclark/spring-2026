@@ -1,6 +1,6 @@
 from PIL import Image
 
-"""kernal_edge = [[-1,-1,-1],[-1, 8,-1],[-1,-1,-1]]"""
+kernal_edge = [[-1,-1,-1],[-1, 8,-1],[-1,-1,-1]]
 
 def defineEdge(imgname, kernal):
     """Get the input image and kernal, create a new image, and sequentially 
@@ -21,11 +21,10 @@ def defineEdge(imgname, kernal):
 def setEdge(img, pixel_coords, new_img, kernal):
     """Get list of three by three pixels and set the center pixel to a new value based on the kernal."""
     pixels = getPixelList(img, pixel_coords)
-    new_p = pixels[1][1] * kernal[1][1]
+    new_p = 0
     for x in range(3):
         for y in range(3):
-            if (x,y) != (1,1):
-                new_p += pixels[x][y] * kernal[x][y]
+            new_p += pixels[x][y] * kernal[x][y]
     if new_p < 0:
         new_p = 0
     elif new_p > 255:
@@ -44,4 +43,4 @@ def getPixelList(img, pixel_coords):
     return pixels 
 
 if __name__ == '__main__':
-    defineEdge(filePath = input(), kernal = input())
+    defineEdge(r'C:\Users\Colin\OneDrive\Documents\GitHub\ComputerScienceII\spring-2026\assignments\pair\p1\rose.jpg', kernal_edge)
