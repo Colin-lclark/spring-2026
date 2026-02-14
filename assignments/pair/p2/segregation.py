@@ -1,4 +1,4 @@
-from graphics import *
+# from graphics import *
 import random
 
 GRAPH_SIZE = 50
