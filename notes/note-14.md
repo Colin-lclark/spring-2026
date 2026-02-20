@@ -43,4 +43,4 @@ python3 -m pip install --upgrade pip
 
 ### Activity
 
-Try the example found on the first page of library's documentation.
+Try the example found on the first page of the library's documentation.
