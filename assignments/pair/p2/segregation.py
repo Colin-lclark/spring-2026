@@ -7,8 +7,6 @@ RED = "red"
 BLUE = "blue"
 EMPTY = "empty"
 
-<<<<<<< HEAD
-
 def grid(red_perc, blue_perc, graph_size, window_size):
 
     total = graph_size * graph_size
@@ -42,18 +40,10 @@ def grid(red_perc, blue_perc, graph_size, window_size):
 
     return board
 
-
-def segregateSquares(empty_perc, red_perc, blue_perc, segregation_perc, graph_size, window_size):
-    return []
-
-
-def placeSquares(red_perc, blue_perc, empty_perc, graph) -> list[list[str]]:
-
 def segregateSquares(empty_perc : int, red_perc : int, blue_perc : int, segregation_perc : int, graph_size : int, window_size : tuple):
     return []
 
 def placeSquares(red_perc : int, blue_perc: int, empty_perc : int) -> list[list[str]]:
->>>>>>> 00b889f736002648d5f4aa9165650322b76e03a9
     return None
 
 def checkGraphSegregation(graph_array : list[list[str]], red_def : str, blue_def : str, empty_def : str) -> int:
