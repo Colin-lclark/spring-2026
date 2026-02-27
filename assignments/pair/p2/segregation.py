@@ -7,7 +7,9 @@ WINDOW_SIZE = (500, 500)
 def segregateSquares(empty_perc, red_perc, blue_perc, segregation_perc, graph_size, window_size):
     return []
 
-def placeSquares(red_perc, blue_perc, empty_perc, graph):
+def 
+
+def placeSquares(red_perc, blue_perc, empty_perc, graph) -> list[list[str]]:
     return None
 
 def checkGraphSegregation(graph_array) -> int:
