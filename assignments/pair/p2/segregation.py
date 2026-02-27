@@ -10,7 +10,7 @@ def segregateSquares(empty_perc : int, red_perc : int, blue_perc : int, segregat
 def placeSquares(red_perc : int, blue_perc: int, empty_perc : int) -> list[list[str]]:
     return None
 
-def checkGraphSegregation(graph_array : list[list[str]]) -> int:
+def checkGraphSegregation(graph_array : list[list[str]], red_def : str, blue_def : str, empty_def : str) -> int:
     return 1
 
 def adjustSegregation(graph : list[list[str]], segregation_perc : int) -> list[list[str]]:
