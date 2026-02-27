@@ -43,8 +43,18 @@ def grid(RED : str, BLUE : str, EMPTY : str, red_perc : str, blue_perc : str, gr
 def segregateSquares(empty_perc : int, red_perc : int, blue_perc : int, segregation_perc : int, graph_size : int, window_size : tuple):
     return []
 
-def checkGraphSegregation(graph_array : list[list[str]], red_def : str, blue_def : str, empty_def : str) -> int:
+def checkSquareSatisfaction(board : list[list[str]], RED : str, BLUE : str, EMPTY : str, graph_size : int) -> int:
+    for row in range(graph_size - 2):
+        for column in range(graph_size - 2):
+            if board[row+1][column+1] == RED:
+                check
+            elif board[row+1][column+1] == BLUE:
+
     return 1
+
+def checkNeighbors(neighborhood : list[list[str]], coords : tuple, color : str) -> str:
+    row =
+    while row 
 
 def adjustSegregation(graph : list[list[str]], segregation_perc : int) -> list[list[str]]:
     return []
