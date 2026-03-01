@@ -2,33 +2,44 @@ from graphics import *
 import random
 
 GRAPH_SIZE = 50
-WINDOW_SIZE = (500, 500)
+WINDOW_SIZE = [1000, 1000]
 SQUARE_TYPES = {'red': 'X','blue': 'O','empty': None,'disred': '*X','disblue': '*O'}
 
-def main(red, blue, segregation):
+def main():
 
+    [red, blue, segregation] = getInput()
     #Stops code if the input(s) is erroneous
-    if red + blue > 100:
-        print("ERROR: Red + Blue can't be greater than 100")
-    elif segregation > 100:
-        print("ERROR: Segregation can only go up to 100")
+    while red + blue > 100 or segregation > 100:
+        if red + blue > 100:
+            print("ERROR: Red + Blue can't be greater than 100")
+        elif segregation > 100:
+            print("ERROR: Segregation can only go up to 100")
+        [red, blue, segregation] = getInput()
+        
+    #Set up graph and return shuffled graph
+    win = GraphWin("Segregation Graph", WINDOW_SIZE[0], WINDOW_SIZE[1], autoflush=False)
+    board = grid(SQUARE_TYPES, red, blue, GRAPH_SIZE)
+    sq_size = getSquareSize(GRAPH_SIZE, WINDOW_SIZE)
+    graphSegregation(win, board, SQUARE_TYPES, sq_size)
 
-    else:
-        #Set up graph and return shuffled graph
-        win = GraphWin("Segregation Graph", WINDOW_SIZE)
-        board = grid(SQUARE_TYPES, red, blue, GRAPH_SIZE)
-        sq_size = getSquareSize(GRAPH_SIZE, WINDOW_SIZE)
+    #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
+    while fullSatsifaction(board, SQUARE_TYPES) == False:        
+        dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
+        adjustSegregation(dis_agents, board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         graphSegregation(win, board, SQUARE_TYPES, sq_size)
 
-        #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
-        while fullSatsifaction(board, SQUARE_TYPES) == False:        
-            dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
-            adjustSegregation(dis_agents, board, SQUARE_TYPES, segregation, GRAPH_SIZE)
-            graphSegregation(win, board, SQUARE_TYPES, sq_size)
+    #Wait for user to click once completed, then close graph
+    win.getMouse()
+    win.close()
 
-        #Wait for user to click once completed, then close graph
-        win.getMouse()
-        win.close()
+def getInput() -> list[int]:
+    #Get inputs for each of the necessary values
+    print('%Red | %Blue | %Similar ')
+    red = int(input())
+    blue = int(input())
+    similar = int(input())
+
+    return [red, blue, similar]
 
 
 def grid(squares : dict, red_perc : str, blue_perc : str, graph_size : int) -> list[list[str]]:
@@ -65,11 +76,11 @@ def grid(squares : dict, red_perc : str, blue_perc : str, graph_size : int) -> l
     return board
 
 
-def getSquareSize(graph_size : int, window_size : tuple) -> int:
-    if window_size(0) < window_size(1):
-        return int(window_size(0)/graph_size)
+def getSquareSize(graph_size : int, window_size : list) -> int:
+    if window_size[0] < window_size[1]:
+        return int(window_size[0]/graph_size)
     else:
-        return int(window_size(1)/graph_size)
+        return int(window_size[1]/graph_size)
 
 
 def getNeighborhood(board : list[list[str]], coords : tuple, squares : dict, segregation_perc : int, graph_size : int) -> list[list[str]]:
@@ -154,7 +165,7 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
     return open_spots
     
 
-def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares : dict, segregation_perc : int, graph_size : int) -> list[list[str]]:
+def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares : dict) -> list[list[str]]:
 
     #Set dissatisfied agents back to satisfied for future rounds
     for value in dis_agents:
@@ -177,6 +188,7 @@ def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares :
     #Return modified board
     return board
 
+
 def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq_size : int):
 
     #Create squares based off of the sq_size and fill them in if they are red or blue
@@ -185,6 +197,7 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
         y = 0
         for column in row:
             agent = Rectangle(Point(x, y), Point(x+sq_size, y+sq_size))
+            agent.setFill('white')
             if column == squares.get('red'):
                 agent.setFill('red')
             if column == squares.get('blue'):
@@ -192,9 +205,9 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
             agent.draw(win)
             y += sq_size
         x += sq_size           
-    win.getMouse()
+    win.getKey()
+    win.update()
     
-
 
 def fullSatsifaction(board : list[list[str]], squares : dict):
 
