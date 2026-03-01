@@ -6,12 +6,38 @@ WINDOW_SIZE = (500, 500)
 SQUARE_TYPES = {'red': 'X','blue': 'O','empty': None,'disred': '*X','disblue': '*O'}
 
 def main():
+    win = GraphWin(0, WINDOW_SIZE, GRAPH_SIZE)
+    win.getMouse()
+    win.close()
 
 
-def graphSegregation(empty_perc : int, red_perc : int, blue_perc : int, segregation_perc : int, graph_size : int, window_size : tuple):
-    window = GraphWin(window_size(1), window_size(2))
-    window.getMouse()
-    window.close()
+def graphSegregation(win : GraphWin, empty_perc : int, red_perc : int, blue_perc : int, squares : dict, segregation_perc : int, graph_size : int, window_size : tuple):
+
+    #Initialize a window and board, and get square size
+    board = grid(squares, red_perc)
+    sq_size = getSquareSize(graph_size, window_size)
+
+    #Create squares based off of the sq_size and fill them in if they are red or blue
+    x = 0
+    for row in board:
+        y = 0
+        for column in row:
+            agent = Rectangle(Point(x, y), Point(x+sq_size, y+sq_size))
+            if column == squares.get('red'):
+                agent.setFill('red')
+            if column == squares.get('blue'):
+                agent.setFill('blue')
+            agent.draw(win)
+            y += sq_size
+        x += sq_size           
+    win.getMouse()
+
+def getSquareSize(graph_size : int, window_size : tuple) -> int:
+    if window_size(0) < window_size(1):
+        return int(window_size(0)/graph_size)
+    else:
+        return int(window_size(1)/graph_size)
+
 
 def grid(squares : dict, red_perc : str, blue_perc : str, graph_size : int) -> list[list[str]]:
 
