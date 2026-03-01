@@ -3,7 +3,7 @@ import random
 
 GRAPH_SIZE = 50
 WINDOW_SIZE = [1000, 1000]
-SQUARE_TYPES = {'red': 'X','blue': 'O','empty': None,'disred': '*X','disblue': '*O'}
+SQUARE_TYPES = {'red': 'X','blue': 'O','empty': ' ','disred': '*X','disblue': '*O'}
 
 def main():
 
@@ -35,9 +35,9 @@ def main():
 def getInput() -> list[int]:
     #Get inputs for each of the necessary values
     print('%Red | %Blue | %Similar ')
-    red = int(input())
-    blue = int(input())
-    similar = int(input())
+    red = float(input())
+    blue = float(input())
+    similar = float(input())
 
     return [red, blue, similar]
 
@@ -197,11 +197,12 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
         y = 0
         for column in row:
             agent = Rectangle(Point(x, y), Point(x+sq_size, y+sq_size))
-            agent.setFill('white')
             if column == squares.get('red'):
                 agent.setFill('red')
-            if column == squares.get('blue'):
+            elif column == squares.get('blue'):
                 agent.setFill('blue')
+            else:
+                agent.setFill('white')
             agent.draw(win)
             y += sq_size
         x += sq_size           
