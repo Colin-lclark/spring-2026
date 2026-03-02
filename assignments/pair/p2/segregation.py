@@ -26,7 +26,7 @@ def main(input : list):
     #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
     while 0 == 0:      
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
-        adjustSegregation(dis_agents, board, SQUARE_TYPES, segregation, GRAPH_SIZE)
+        adjustSegregation(dis_agents, board, SQUARE_TYPES)
         graphSegregation(win, board, SQUARE_TYPES, sq_size)
         win.getMouse()
         win.undraw()
@@ -88,74 +88,66 @@ def getSquareSize(graph_size : int, window_size : list) -> int:
         return int(window_size[1]/graph_size)
 
 
-def getNeighborhood(board : list[list[str]], coords : tuple, squares : dict, segregation_perc : int, graph_size : int) -> list[list[list[str]]]:
+def getNeighborhood(board : list[list[str]], coords : tuple, graph_size : int) -> list[list[str]]:
 
     (x, y) = coords
-    #If the square at given coordinate is not at the edge of the board
-    if x != (0 or graph_size - 1) and y != (0 or graph_size - 1):
-        return [board[x - 1:x + 2][y - 1:y + 2], 'mid']
+    neighborhood = []
+    for i in range(3):
+        neighborhood.append([])
+        for j in range(3):
+            neighborhood[i].append(None)
+
+
+    if x == 0:
+        x += 1
     
-    #If the square at given coordinate is at the bottom edge of board but not the corner
-    elif x != (0 or graph_size - 1) and y != 0:
-        return [board[x - 1:x + 2][y - 1:], 'bottom']
+    if y == 0:
+        y += 1
     
-    #If given square is at the top edge but not the corner of board
-    elif x != (0 or graph_size - 1):
-        return [board[x - 1:x + 2][:y + 2], 'top']
+    if x == graph_size - 1:
+        x -= 1
     
-    #If given square is on the right edge (not corner)
-    elif x != 0 and y != (0 or graph_size - 1):
-        return [board[x - 1:][y - 1:y + 2], 'right']
+    if y == graph_size - 1:
+        y -= 1
     
-    #If given square is on the left edge (not corner)
-    elif y != (0 or graph_size - 1):
-        return [board[:x + 2][y - 1:y + 2], 'left']
+    n = 0
+    for row in range(x - 1, x + 2):
+        m = 0
+        for column in range(y - 1, y + 2):
+            neighborhood[n][m] = board[row][column]
     
-    #If square is in corner
-    else:
-        if coords == [0,0]:
-            return [board[:x + 2][:y + 2], 'topleft']
-        elif coords == [0, graph_size-1]:
-            return [board[x - 1:][:y + 2], 'topright']
-        elif coords == [graph_size-1, 0]:
-            return [board[:x + 2][y - 1:], 'botright']
-        else:
-            return [board[x - 1:][y - 1:], 'botleft']
+    return neighborhood
         
 
-def checkAgentSatisfaction(neighborhood : list[list[list[str]]], squares : dict, segregation_perc : int, graph_size) -> str:
+def checkAgentSatisfaction(neighborhood : list[list[str]], squares : dict, segregation_perc : int, graph_size) -> str:
 
     #Red, Blue
     colors = [0, 0]
 
-    #Location dictionary that specifies what the right row and column values are for the agent in neighborhood
-    square_location = {'mid' or 'bottom' or 'botright' or 'right': (1, 1), 'top' or 'topright': (0, 1), 'botleft' or 'left': (1, 0), 'topleft': (0, 0)}
-    (x, y) = square_location.get(neighborhood[1])
-
     #If the agent (square) is not empty
-    if neighborhood[0][x][y] != squares.get('empty'):
+    if neighborhood[1][1] != squares.get('empty'):
 
-        for row in range(graph_size):
-            for column in range(graph_size):
+        for row in range(3):
+            for column in range(3):
 
                 #Only counts the color if it is not the specified agent (and not empty)
-                if (row, column) != (x, y):
+                if (row, column) != (1, 1):
 
                     #Count number of reds and blus
-                    if neighborhood[0][row][column] == squares.get(1):
+                    if neighborhood[row][column] == squares.get(1):
                         colors[0] += 1
-                    elif neighborhood[0][row][column] == squares.get(2):
+                    elif neighborhood[row][column] == squares.get(2):
                         colors[1] += 1
 
         #Return a dissatisfied value (from dictionary) if the agent is satisfied (if the percent of neighbors in the area is greater than or equal to segregation_perc)
-        if neighborhood[0][x][y] == squares.get(1) and (100 * (colors[0] / (colors[0] + colors[1]))) < segregation_perc:
+        if neighborhood[1][1] == squares.get(1) and (100 * (colors[0] / (colors[0] + colors[1]))) < segregation_perc:
             return squares.get('disred')
-        elif neighborhood[0][x][y] == squares.get(2) and (100 * (colors[1] / (colors[0] + colors[1]))) < segregation_perc:
+        elif neighborhood[1][1] == squares.get(2) and (100 * (colors[1] / (colors[0] + colors[1]))) < segregation_perc:
             return squares.get('disblue')
 
     #Returns same value if empty or satsified
     else:
-        return neighborhood[0][x][y]
+        return neighborhood[1][1]
     
 
 def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_perc : int, graph_size : int) -> list[str]:
@@ -167,7 +159,7 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
     for row in board:
         y = 0
         for column in row:
-            column = checkAgentSatisfaction(getNeighborhood(board, (x, y), squares, segregation_perc, graph_size), squares, segregation_perc, graph_size)
+            column = checkAgentSatisfaction(getNeighborhood(board, (x, y), graph_size), squares, segregation_perc, graph_size)
             if column == (squares.get('empty') or squares.get('disred') or squares.get('disblue')):
                 open_spots.append(column)
             y += 1
@@ -176,6 +168,9 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
     
 
 def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares : dict) -> list[list[str]]:
+
+    print(dis_agents)
+    print(len(dis_agents))
 
     #Set dissatisfied agents back to satisfied for future rounds
     for value in dis_agents:
