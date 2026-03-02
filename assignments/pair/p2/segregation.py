@@ -1,4 +1,4 @@
-# from graphics import *
+from graphics import *
 import random
 
 GRAPH_SIZE = 50
@@ -23,15 +23,20 @@ def main(input : list):
     sq_size = getSquareSize(GRAPH_SIZE, WINDOW_SIZE)
     graphSegregation(win, board, SQUARE_TYPES, sq_size)
 
+    rounds = 0  
+
     #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
     while 0 == 0:      
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         adjustSegregation(dis_agents, board, SQUARE_TYPES)
         graphSegregation(win, board, SQUARE_TYPES, sq_size)
-        win.getMouse()
-        win.undraw()
+        #win.getMouse()
+        #win.undraw()
+        rounds += 1
         if fullSatsifaction(board, SQUARE_TYPES) == True:
             break
+
+    print("Rounds:", rounds) 
 
     #Wait for user to click once completed, then close graph
     win.getKey()
@@ -47,7 +52,7 @@ def getInput() -> list[int]:
     return [red, blue, similar]
 
 
-def grid(squares : dict, red_perc : str, blue_perc : str, graph_size : int) -> list[list[str]]:
+def grid(squares : dict, red_perc : float, blue_perc : float, graph_size : int) -> list[list[str]]:
 
     total = graph_size * graph_size
 
@@ -97,7 +102,6 @@ def getNeighborhood(board : list[list[str]], coords : tuple, graph_size : int) -
         for j in range(3):
             neighborhood[i].append(None)
 
-
     if x == 0:
         x += 1
     
@@ -115,37 +119,39 @@ def getNeighborhood(board : list[list[str]], coords : tuple, graph_size : int) -
         m = 0
         for column in range(y - 1, y + 2):
             neighborhood[n][m] = board[row][column]
-    
+            m += 1
+        n += 1
+
     return neighborhood
         
 
 def checkAgentSatisfaction(neighborhood : list[list[str]], squares : dict, segregation_perc : int, graph_size) -> str:
 
-    #Red, Blue
     colors = [0, 0]
 
-    #If the agent (square) is not empty
     if neighborhood[1][1] != squares.get('empty'):
 
         for row in range(3):
             for column in range(3):
 
-                #Only counts the color if it is not the specified agent (and not empty)
                 if (row, column) != (1, 1):
 
-                    #Count number of reds and blus
-                    if neighborhood[row][column] == squares.get(1):
+                    if neighborhood[row][column] == squares.get('red'):
                         colors[0] += 1
-                    elif neighborhood[row][column] == squares.get(2):
+                    elif neighborhood[row][column] == squares.get('blue'):
                         colors[1] += 1
 
-        #Return a dissatisfied value (from dictionary) if the agent is satisfied (if the percent of neighbors in the area is greater than or equal to segregation_perc)
-        if neighborhood[1][1] == squares.get(1) and (100 * (colors[0] / (colors[0] + colors[1]))) < segregation_perc:
+        total = colors[0] + colors[1]
+        if total == 0:
+            return neighborhood[1][1]
+
+        if neighborhood[1][1] == squares.get('red') and (100 * (colors[0] / total)) < segregation_perc:
             return squares.get('disred')
-        elif neighborhood[1][1] == squares.get(2) and (100 * (colors[1] / (colors[0] + colors[1]))) < segregation_perc:
+        elif neighborhood[1][1] == squares.get('blue') and (100 * (colors[1] / total)) < segregation_perc:
             return squares.get('disblue')
 
-    #Returns same value if empty or satsified
+        return neighborhood[1][1]
+
     else:
         return neighborhood[1][1]
     
@@ -154,13 +160,14 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
 
     open_spots = []
 
-    #Mark dissatisfied agents by adding each empty and dissatisfied value to an empty array
     x = 0
     for row in board:
         y = 0
         for column in row:
             column = checkAgentSatisfaction(getNeighborhood(board, (x, y), graph_size), squares, segregation_perc, graph_size)
-            if column == (squares.get('empty') or squares.get('disred') or squares.get('disblue')):
+            #if column in [squares.get('empty'), squares.get('disred'), squares.get('disblue')]:
+            if column in [squares.get('disred'), squares.get('disblue')]:
+                board[x][y] = column
                 open_spots.append(column)
             y += 1
         x += 1
@@ -169,34 +176,30 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
 
 def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares : dict) -> list[list[str]]:
 
-    print(dis_agents)
-    print(len(dis_agents))
+    #print(dis_agents)
+    #print(len(dis_agents))
 
-    #Set dissatisfied agents back to satisfied for future rounds
-    for value in dis_agents:
-        if value == squares.get('disred'):
-            value = squares.get('red')
-        elif value == squares.get('disblue'):
-            value = squares.get('blue')
+    for i in range(len(dis_agents)):
+        if dis_agents[i] == squares.get('disred'):
+            dis_agents[i] = squares.get('red')
+        elif dis_agents[i] == squares.get('disblue'):
+            dis_agents[i] = squares.get('blue')
 
-    #Shuffle empty and dissatisfied agents
     random.shuffle(dis_agents)
 
-    #Put shuffled agents in place of unshuffled agents
     i = 0
-    for row in board:
-        for column in row:
-            if column == (squares.get('empty') or squares.get('disred') or squares.get('disblue')):
-                column = dis_agents[i]
-                i += 1
+    for r in range(len(board)):
+        for c in range(len(board[r])):
+            if board[r][c] in [squares.get('empty'), squares.get('disred'), squares.get('disblue')]:
+                if i < len(dis_agents):
+                    board[r][c] = dis_agents[i]
+                    i += 1
 
-    #Return modified board
     return board
 
 
 def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq_size : int):
 
-    #Create squares based off of the sq_size and fill them in if they are red or blue
     x = 0
     for row in board:
         y = 0
@@ -215,10 +218,9 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
 
 def fullSatsifaction(board : list[list[str]], squares : dict) -> bool:
 
-    #Returns true only if all agents are satisfied
     for row in board:
         for column in row:
-            if column == (squares.get('disred') or squares.get('disblue')):
+            if column in [squares.get('disred'), squares.get('disblue')]:
                 return False
     return True
 
