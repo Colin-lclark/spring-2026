@@ -30,8 +30,8 @@ def main(input : list):
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         adjustSegregation(dis_agents, board, SQUARE_TYPES)
         graphSegregation(win, board, SQUARE_TYPES, sq_size)
-        #win.getMouse()
-        #win.undraw()
+        win.getMouse()
+        win.delete("all")
         rounds += 1
         if fullSatsifaction(board, SQUARE_TYPES) == True:
             break
@@ -199,7 +199,6 @@ def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares :
 
 
 def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq_size : int):
-    win.delete("all")
     x = 0
     for row in board:
         y = 0
