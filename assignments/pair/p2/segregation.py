@@ -199,7 +199,7 @@ def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares :
 
 
 def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq_size : int):
-
+    win.delete("all")
     x = 0
     for row in board:
         y = 0
