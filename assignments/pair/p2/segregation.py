@@ -4,10 +4,11 @@ import random
 GRAPH_SIZE = 50
 WINDOW_SIZE = [1000, 1000]
 SQUARE_TYPES = {'red': 'X','blue': 'O','empty': ' ','disred': '*X','disblue': '*O'}
+DEFAULT_INPUT = [0.4, 0.5, 0.3]
 
-def main():
+def main(input : list):
 
-    [red, blue, segregation] = getInput()
+    [red, blue, segregation] = input #getInput()
     #Stops code if the input(s) is erroneous
     while red + blue > 100 or segregation > 100:
         if red + blue > 100:
@@ -23,13 +24,17 @@ def main():
     graphSegregation(win, board, SQUARE_TYPES, sq_size)
 
     #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
-    while fullSatsifaction(board, SQUARE_TYPES) == False:        
+    while 0 == 0:      
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         adjustSegregation(dis_agents, board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         graphSegregation(win, board, SQUARE_TYPES, sq_size)
+        win.getMouse()
+        win.undraw()
+        if fullSatsifaction(board, SQUARE_TYPES) == True:
+            break
 
     #Wait for user to click once completed, then close graph
-    win.getMouse()
+    win.getKey()
     win.close()
 
 def getInput() -> list[int]:
@@ -83,38 +88,39 @@ def getSquareSize(graph_size : int, window_size : list) -> int:
         return int(window_size[1]/graph_size)
 
 
-def getNeighborhood(board : list[list[str]], coords : tuple, squares : dict, segregation_perc : int, graph_size : int) -> list[list[str]]:
+def getNeighborhood(board : list[list[str]], coords : list, squares : dict, segregation_perc : int, graph_size : int) -> list[list[str]]:
 
+    [x, y] = coords
     #If the square at given coordinate is not at the edge of the board
-    if coords(1) != (0 or graph_size - 1) and coords(2) != (0 or graph_size - 1):
-        return [board[coords(1)-1:coords(1)+2][coords(2)-1:coords(2)+2], 'mid'] 
+    if x != (0 or graph_size - 1) and y != (0 or graph_size - 1):
+        return [board[:x + 2][y - 1:y + 2], 'mid'] 
     
     #If the square at given coordinate is at the bottom edge of board but not the corner
-    elif coords(1) != (0 or graph_size - 1) and coords(2) != 0:
-        return [board[coords(1)-1:coords(1) - 1:][coords(2) - 1:], 'bottom']
+    elif x != (0 or graph_size - 1) and y != 0:
+        return [board[x - 1:x + 2][y - 1:], 'bottom']
     
     #If given square is at the top edge but not the corner of board
-    elif coords(1) != (0 or graph_size - 1):
-        return [board[coords(1)-1:coords(1) + 2][:coords(2) + 2], 'top']
+    elif x != (0 or graph_size - 1):
+        return [board[x - 1:x + 2][:y + 2], 'top']
     
     #If given square is on the right edge (not corner)
-    elif coords(1) != 0 and coords(2) != (0 or graph_size - 1):
-        return [board[coords(1)-1:][coords(2)-1:coords(2)+2], 'right']
+    elif x != 0 and y != (0 or graph_size - 1):
+        return [board[x - 1:][y - 1:y + 2], 'right']
     
     #If given square is on the left edge (not corner)
-    elif coords(2) != (0 or graph_size - 1):
-        return [board[:coords(1)+2][coords(2)-1:coords(2)+2], 'left']
+    elif y != (0 or graph_size - 1):
+        return [board[:x + 2][y - 1:y + 2], 'left']
     
     #If square is in corner
     else:
         if coords == [0,0]:
-            return [board[:coords(1)+2][:coords(2)+2], 'topleft']
+            return [board[:x + 2][:y + 2], 'topleft']
         elif coords == [0, graph_size-1]:
-            return [board[coords(1)-1:][:coords(2)+2], 'topright']
+            return [board[x - 1:][:y + 2], 'topright']
         elif coords == [graph_size-1, 0]:
-            return [board[:coords(1)+2][coords(2)-1:], 'botright']
+            return [board[:x + 2][y - 1:], 'botright']
         else:
-            return [board[coords(1)-1:][coords(2)-1:], 'botleft']
+            return [board[x - 1:][y - 1:], 'botleft']
         
 
 def checkAgentSatisfaction(neighborhood : list[list[list[str]]], squares : dict, segregation_perc : int, graph_size) -> str:
@@ -159,7 +165,7 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
     #Mark dissatisfied agents by adding each empty and dissatisfied value to an empty array
     for row in board:
         for column in row:
-            column = checkAgentSatisfaction(getNeighborhood(board, (row, column), squares, segregation_perc, graph_size), squares, segregation_perc)
+            column = checkAgentSatisfaction(getNeighborhood(board, [row, column], squares, segregation_perc, graph_size), squares, segregation_perc)
             if column == (squares.get('empty') or squares.get('disred') or squares.get('disblue')):
                 open_spots.append(column)
     return open_spots
@@ -205,9 +211,7 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
                 agent.setFill('white')
             agent.draw(win)
             y += sq_size
-        x += sq_size           
-    win.getKey()
-    win.update()
+        x += sq_size
     
 
 def fullSatsifaction(board : list[list[str]], squares : dict):
@@ -221,4 +225,4 @@ def fullSatsifaction(board : list[list[str]], squares : dict):
 
 
 if __name__ == "__main__":
-    main()
+    main(DEFAULT_INPUT)
