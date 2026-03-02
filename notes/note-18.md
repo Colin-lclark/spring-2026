@@ -18,7 +18,7 @@ and
 def fac2(n):
 
     def helper(n, a):
-        if n == 1: return a
+        if n == 0: return a
         return helper(n - 1, n*a)
 
     return helper(n, 1)
