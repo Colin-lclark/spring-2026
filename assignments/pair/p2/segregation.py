@@ -1,8 +1,8 @@
 from graphics import *
 import random
 
-GRAPH_SIZE = 50
-WINDOW_SIZE = [1000, 1000]
+GRAPH_SIZE = 10
+WINDOW_SIZE = [800, 800]
 SQUARE_TYPES = {'red': 'X','blue': 'O','empty': ' ','disred': '*X','disblue': '*O'}
 DEFAULT_INPUT = [0.4, 0.5, 0.3]
 
@@ -23,19 +23,21 @@ def main(input : list):
     sq_size = getSquareSize(GRAPH_SIZE, WINDOW_SIZE)
     graphSegregation(win, board, SQUARE_TYPES, sq_size)
 
-    rounds = 0  
+    win.getMouse()
+    rounds = 0
+
 
     #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
     while 0 == 0:      
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
         adjustSegregation(dis_agents, board, SQUARE_TYPES)
-        graphSegregation(win, board, SQUARE_TYPES, sq_size)
+        if fullSatsifaction(dis_agents, SQUARE_TYPES) or rounds > 500:
+            break 
+        dis_agents.clear
         rounds += 1
-        if fullSatsifaction(board, SQUARE_TYPES) == True:
-            break
-        win.getMouse()
-        win.delete("all")
 
+    win.delete("all")
+    graphSegregation(win, board, SQUARE_TYPES, sq_size)
     print("Rounds:", rounds) 
 
     #Wait for user to click once completed, then close graph
@@ -44,12 +46,10 @@ def main(input : list):
 
 def getInput() -> list[int]:
     #Get inputs for each of the necessary values
-    print('%Red | %Blue | %Similar ')
-    red = float(input())
-    blue = float(input())
-    similar = float(input())
+    print('[Red, Blue, Similar]')
+    input = list(input())
 
-    return [red, blue, similar]
+    return input
 
 
 def grid(squares : dict, red_perc : float, blue_perc : float, graph_size : int) -> list[list[str]]:
@@ -162,10 +162,11 @@ def markDissatisfiedAgents(board : list[list[str]], squares : dict, segregation_
         y = 0
         while y < len(board[x]):
             board[x][y] = checkAgentSatisfaction(getNeighborhood(board, (x, y), graph_size), squares, segregation_perc, graph_size)
-            if board[x][y] == (squares.get('empty') or squares.get('disred') or squares.get('disblue')):
+            if board[x][y] == squares.get('empty') or board[x][y] == squares.get('disred') or board[x][y] == squares.get('disblue'):
                 open_spots.append(board[x][y])
             y += 1
         x += 1
+
     return open_spots
     
 
@@ -182,10 +183,9 @@ def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares :
     i = 0
     for r in range(len(board)):
         for c in range(len(board[r])):
-            if board[r][c] in [squares.get('empty'), squares.get('disred'), squares.get('disblue')]:
-                if i < len(dis_agents):
-                    board[r][c] = dis_agents[i]
-                    i += 1
+            if board[r][c] == squares.get('empty') or board[r][c] == squares.get('disred') or board[r][c] == squares.get('disblue'):
+                board[r][c] = dis_agents[i]
+                i += 1
     
     return board
 
@@ -207,12 +207,11 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
         x += sq_size
     
 
-def fullSatsifaction(board : list[list[str]], squares : dict) -> bool:
+def fullSatsifaction(dis_agents : list, squares : dict) -> bool:
 
-    for row in board:
-        for column in row:
-            if column in [squares.get('disred'), squares.get('disblue')]:
-                return False
+    for row in dis_agents:
+        if row != squares.get('empty'):
+            return False
     return True
 
 
