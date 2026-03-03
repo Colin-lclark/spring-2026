@@ -1,7 +1,7 @@
 from graphics import *
 import random
 
-GRAPH_SIZE = 10
+GRAPH_SIZE = 50
 WINDOW_SIZE = [800, 800]
 SQUARE_TYPES = {'red': 'X','blue': 'O','empty': ' ','disred': '*X','disblue': '*O'}
 DEFAULT_INPUT = [0.4, 0.5, 0.3]
