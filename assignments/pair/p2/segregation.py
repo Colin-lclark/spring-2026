@@ -8,7 +8,7 @@ DEFAULT_INPUT = [0.4, 0.5, 0.3]
 
 def main(input : list):
 
-    [red, blue, segregation] = input #getInput()
+    [red, blue, segregation] = input
     #Stops code if the input(s) is erroneous
     while red + blue > 1 or segregation > 1:
         if red + blue > 1:
@@ -43,6 +43,7 @@ def main(input : list):
     #Wait for user to click once completed, then close graph
     win.getMouse()
     win.close()
+
 
 def getInput() -> list[int]:
     #Get inputs for each of the necessary values
