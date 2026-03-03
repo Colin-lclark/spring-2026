@@ -47,10 +47,14 @@ def main(input : list):
 
 def getInput() -> list[int]:
     #Get inputs for each of the necessary values
-    print('[Red, Blue, Similar]')
-    input = list(input())
+    print('Red')
+    red = float(input())
+    print('Blue')
+    blue = float(input())
+    print('Similarity')
+    segregation = float(input())
 
-    return input
+    return [red, blue, segregation]
 
 
 def grid(squares : dict, red_perc : float, blue_perc : float, graph_size : int) -> list[list[str]]:
@@ -217,4 +221,4 @@ def fullSatsifaction(board : list[list[str]], squares : dict) -> bool:
 
 
 if __name__ == "__main__":
-    main(DEFAULT_INPUT)
+    main(getInput())
