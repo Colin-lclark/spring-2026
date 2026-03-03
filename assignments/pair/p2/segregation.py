@@ -10,10 +10,10 @@ def main(input : list):
 
     [red, blue, segregation] = input #getInput()
     #Stops code if the input(s) is erroneous
-    while red + blue > 100 or segregation > 100:
-        if red + blue > 100:
+    while red + blue > 1 or segregation > 1:
+        if red + blue > 1:
             print("ERROR: Red + Blue can't be greater than 100")
-        elif segregation > 100:
+        elif segregation > 1:
             print("ERROR: Segregation can only go up to 100")
         [red, blue, segregation] = getInput()
         
@@ -30,9 +30,9 @@ def main(input : list):
     #Keep moving unsatisfied agents and refreshing the graph until all agents are satisfied
     while 0 == 0:      
         dis_agents = markDissatisfiedAgents(board, SQUARE_TYPES, segregation, GRAPH_SIZE)
-        adjustSegregation(dis_agents, board, SQUARE_TYPES)
-        if fullSatsifaction(dis_agents, SQUARE_TYPES) or rounds > 500:
-            break 
+        if fullSatsifaction(board, SQUARE_TYPES) or rounds > 500:
+            break
+        adjustSegregation(dis_agents, board, SQUARE_TYPES) 
         dis_agents.clear
         rounds += 1
 
@@ -177,15 +177,14 @@ def adjustSegregation(dis_agents : list[str], board : list[list[str]], squares :
             dis_agents[i] = squares.get('red')
         elif dis_agents[i] == squares.get('disblue'):
             dis_agents[i] = squares.get('blue')
-
+    
     random.shuffle(dis_agents)
 
-    i = 0
     for r in range(len(board)):
         for c in range(len(board[r])):
             if board[r][c] == squares.get('empty') or board[r][c] == squares.get('disred') or board[r][c] == squares.get('disblue'):
-                board[r][c] = dis_agents[i]
-                i += 1
+                board[r][c] = dis_agents[len(dis_agents) - 1]
+                dis_agents.pop()
     
     return board
 
@@ -207,11 +206,12 @@ def graphSegregation(win : GraphWin, board : list[list[str]], squares : dict, sq
         x += sq_size
     
 
-def fullSatsifaction(dis_agents : list, squares : dict) -> bool:
+def fullSatsifaction(board : list[list[str]], squares : dict) -> bool:
 
-    for row in dis_agents:
-        if row != squares.get('empty'):
-            return False
+    for row in board:
+        for column in row:
+            if column == squares.get('disred') or column == squares.get('disblue'):
+                return False
     return True
 
 
