@@ -17,7 +17,14 @@ def count_pairs(s : str) -> int:
     count_pairs('axbx') → 1
     """
 
-    return 1
+    def helper(s : str, pairs : int) -> int:
+        if len(s) < 3:
+            return pairs
+        elif s[:3][0] == s[:3][2]:
+            pairs += 1
+        return helper(s[1:], pairs)
+
+    return helper(s, 0)
 
 def count_abc(s : str) -> int:
 
@@ -28,8 +35,14 @@ def count_abc(s : str) -> int:
     count_abc('abcxxabc') → 2
     count_abc('abaxxaba') → 2
     """
+    def helper(s : str, abc : int) -> int:
+        if len(s) < 3:
+            return abc
+        elif s[:3] == 'abc' or s[:3] == 'aba':
+            abc += 1
+        return helper(s[1:], abc)
 
-    return 1
+    return helper(s, 0)
 
 def count_11(s : str) -> int:
 
@@ -41,7 +54,15 @@ def count_11(s : str) -> int:
     count_11('111') → 1
     """
 
-    return 1
+    def helper(s : str, eleven : int) -> int:
+        if len(s) < 2:
+            return eleven
+        elif s[:2] == '11':
+            return helper(s[2:], eleven + 1)
+        else:
+            return helper(s[1:], eleven)
+    
+    return helper(s, 0)
 
 def string_clean(s : str) -> str:
 
@@ -54,7 +75,15 @@ def string_clean(s : str) -> str:
     string_clean('Hello') → 'Helo'
     """
 
-    return ''
+    def helper(s : str, index : int):
+        if index == len(s) - 1:
+            return s
+        elif s[index] == s[index + 1]:
+            return helper(s[index + 1:], index)
+        else:
+            return helper(s, index + 1)
+        
+    return helper(s, 0)
 
 def count_hi2(s : str) -> int:
 
