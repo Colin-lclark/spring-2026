@@ -198,18 +198,12 @@ def str_dist(s : str, sub : str) -> int:
     str_dist('cccatcowcatxx', 'cat') → 9
     """
 
-    def helper(s : str, sub : str, length : int, is_sub : bool) -> int:
-
-        if len(s) < len(sub):
-            return length
-        elif s[len(sub):] == sub:
-            return helper(s[len(sub):], sub, len(sub), is_sub)
-        elif is_sub and len(s[:s.find(sub) + len(sub)]) + len(sub) > length:
-            return helper(s[s.find(sub) + len(sub):], sub, len(s[:s.find(sub) + len(sub)]) + len(sub), True)
-        elif is_sub:
-            return helper(s[s.find(sub) + len(sub):], sub, length, True)
-        else:
-            return helper(s[1:], sub, length, is_sub)
-
-    return helper(s, sub, 0, False) 
-
+    if s.find(sub) == -1:
+        return 0
+    if s[:len(sub)] == sub and s[len(s) - len(sub):] == sub:
+        return len(s)
+    elif s[:len(sub)] != sub:
+        return str_dist(s[s.find(sub):], sub)
+    else:
+        return str_dist(s[:len(s) - 1], sub)
+    
