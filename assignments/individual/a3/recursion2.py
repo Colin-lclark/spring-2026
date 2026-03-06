@@ -79,7 +79,7 @@ def string_clean(s : str) -> str:
         if index == len(s) - 1:
             return s
         elif s[index] == s[index + 1]:
-            return helper(s[index + 1:], index)
+            return helper(s[0:index] + s[index + 2:], index)
         else:
             return helper(s, index + 1)
         
