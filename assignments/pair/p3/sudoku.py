@@ -7,7 +7,7 @@ __author__ = 'PUT THE SECOND NAME HERE'
 class Square:
     """A `Square` consists of 4 attributes.
 
-    `value` is an integer value between 0 and 9, inclusive.  0 means
+    `value` is an integer value between 0 and 9, inclusive. 0 means
     empty, otherwise `value` indicates the value currently assigned to
     the corresponding location in the grid.
 
@@ -61,16 +61,16 @@ def find_block(here : tuple[int, int]) -> list[tuple[int, int]]:
     return None
 
 def create_squares(diagram : str = None) -> list[list[Square]]:
-    """Returns a 9x9 array of instances of `Square` objects.  Recall that
-    each `Square` has 4 attributes.  The attributes are `value`,
-    `row`, `column`, and `block`.  The first attribute is the value
-    assigned to the associated position in the grid.  The other three
+    """Returns a 9x9 array of instances of `Square` objects. Recall that
+    each `Square` has 4 attributes. The attributes are `value`,
+    `row`, `column`, and `block`. The first attribute is the value
+    assigned to the associated position in the grid. The other three
     attributes are references to all the 3*8 neighbors in the same
     row, in the same column, and in the same block as this location.
 
     If argument `diagram` is None, then all the values are set to 0.
     Otherwise, the values are set according to the diagram (empty
-    squares are represented with value 0).  The optional argument
+    squares are represented with value 0). The optional argument
     `diagram` is a string with numbers to be filled in the grid, or
     dots to represent empty squares, or optional newlines to enhance
     readability when printed."""
@@ -86,7 +86,7 @@ def __str__(grid : list[list[Square]]) -> str:
     return None
 
 def find_valid_numbers(square : Square) -> list[bool]:
-    """Returns a boolean array of length 10.  For each digit, the
+    """Returns a boolean array of length 10. For each digit, the
     corresponding entry in the array is `True` if that number does not
     appear elsewhere in the `Square`'s row, column, or block."""
 
