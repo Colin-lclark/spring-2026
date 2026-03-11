@@ -17,7 +17,14 @@ def count_pairs(s : str) -> int:
     count_pairs('axbx') → 1
     """
 
-    return 1
+    def helper(s : str, pairs : int) -> int:
+        if len(s) < 3:
+            return pairs
+        elif s[:3][0] == s[:3][2]:
+            pairs += 1
+        return helper(s[1:], pairs)
+
+    return helper(s, 0)
 
 def count_abc(s : str) -> int:
 
@@ -28,8 +35,14 @@ def count_abc(s : str) -> int:
     count_abc('abcxxabc') → 2
     count_abc('abaxxaba') → 2
     """
+    def helper(s : str, abc : int) -> int:
+        if len(s) < 3:
+            return abc
+        elif s[:3] == 'abc' or s[:3] == 'aba':
+            abc += 1
+        return helper(s[1:], abc)
 
-    return 1
+    return helper(s, 0)
 
 def count_11(s : str) -> int:
 
@@ -41,7 +54,15 @@ def count_11(s : str) -> int:
     count_11('111') → 1
     """
 
-    return 1
+    def helper(s : str, eleven : int) -> int:
+        if len(s) < 2:
+            return eleven
+        elif s[:2] == '11':
+            return helper(s[2:], eleven + 1)
+        else:
+            return helper(s[1:], eleven)
+    
+    return helper(s, 0)
 
 def string_clean(s : str) -> str:
 
@@ -54,7 +75,14 @@ def string_clean(s : str) -> str:
     string_clean('Hello') → 'Helo'
     """
 
-    return ''
+    def helper(s : str, new_s : str, index : int) -> str:
+        if index == len(s) - 1:
+            return new_s + s[index]
+        elif s[index] != s[index + 1]:
+            new_s += s[index]
+        return helper(s, new_s, index + 1)
+    
+    return helper(s, '', 0)
 
 def count_hi2(s : str) -> int:
 
@@ -67,8 +95,17 @@ def count_hi2(s : str) -> int:
     count_hi2('xhixhi') → 0
 
     """
-
-    return ''
+    def helper(s : str, hi : int) -> int:
+        if len(s) < 2:
+            return hi
+        elif s[:3] == 'xhi':
+            return helper(s[3:], hi)
+        elif s[:2] == 'hi':
+            return helper(s[2:], hi + 1)
+        else:
+            return helper(s[1:], hi)
+        
+    return helper(s, 0)
 
 def paren_bit(s : str) -> str:
 
@@ -80,8 +117,16 @@ def paren_bit(s : str) -> str:
     paren_bit('x(hello)') → '(hello)'
     paren_bit('(xy)1') → '(xy)'
     """
-
-    return ''
+    def helper(s : str, index : int, p : bool) -> str:
+        if p == True and s[index] == ')':
+            return s[:index + 1]
+        elif s[index] == '(' or p == True:
+            return helper(s, index + 1, True) 
+        else:
+            return helper(s[1:], index, False)
+        
+    return helper(s, 0, False)
+        
 
 def nest_paren(s : str) -> bool:
 
@@ -94,7 +139,15 @@ def nest_paren(s : str) -> bool:
     nest_paren('(((x))') → False
     """
 
-    return False
+    if len(s) % 2 > 0:
+        return False
+    elif s == '()' or s == '':
+        return True
+    elif len(s) > 2 and s[0] == '(' and s[len(s) - 1] == ')':
+        return nest_paren(s[1:len(s) - 1])
+    else:
+        return False
+
 
 def str_count(s : str, sub : str) -> int:
 
@@ -106,8 +159,16 @@ def str_count(s : str, sub : str) -> int:
     str_count('catcowcat', 'cow') → 1
     str_count('catcowcat', 'dog') → 0
     """
+    def helper(s : str, sub : str, num_sub : int) -> int:
+        if len(s) < len(sub):
+            return num_sub
+        elif s[:len(sub)] == sub:
+            return helper(s[len(sub):], sub, num_sub + 1)
+        else:
+            return helper(s[1:], sub, num_sub)
 
-    return 1
+    return helper(s, sub, 0)     
+    
 
 def str_copies(s : str, sub : str, n : int) -> bool:
     """Given a string and a non-empty substring `sub`, compute recursively
@@ -118,8 +179,14 @@ def str_copies(s : str, sub : str, n : int) -> bool:
     str_copies('catcowcat', 'cow', 2) → False
     str_copies('catcowcat', 'cow', 1) → True
     """
+    def helper(s : str, sub : str, num_sub : int) -> int:
+        if len(s) < len(sub):
+            return num_sub
+        elif s[:len(sub)] == sub:
+            return helper(s[1:], sub, num_sub + 1)
+        return helper(s[1:], sub, num_sub)
 
-    return False
+    return helper(s, sub, 0) == n
 
 def str_dist(s : str, sub : str) -> int:
     """Given a string and a non-empty substring `sub`, compute recursively
@@ -131,4 +198,12 @@ def str_dist(s : str, sub : str) -> int:
     str_dist('cccatcowcatxx', 'cat') → 9
     """
 
-    return 0
+    if s.find(sub) == -1:
+        return 0
+    if s[:len(sub)] == sub and s[len(s) - len(sub):] == sub:
+        return len(s)
+    elif s[:len(sub)] != sub:
+        return str_dist(s[s.find(sub):], sub)
+    else:
+        return str_dist(s[:len(s) - 1], sub)
+    
