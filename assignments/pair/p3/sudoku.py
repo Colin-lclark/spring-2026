@@ -58,7 +58,14 @@ def find_block(here : tuple[int, int]) -> list[tuple[int, int]]:
     in the same 3x3 block as `here` (represented by an ordered pair)."""
 
     # TODO You have to write this
-    return None
+    r = []
+    row = int(here[0] / 3)
+    col = int(here[1] / 3)
+    for i in range(row * 3, (row + 1) * 3):
+        for j in range(col * 3, (col + 1) * 3):
+            if (i, j) != here:
+                r.append((i, j))
+    return r
 
 def create_squares(diagram : str = None) -> list[list[Square]]:
     """Returns a 9x9 array of instances of `Square` objects. Recall that
